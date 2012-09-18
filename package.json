@@ -1,7 +1,7 @@
 {
   "name": "npm-modules-count",
   "description": "A jsonp reachable api for returning the total number of npm modules.",
-  "version": "0.0.1-8",
+  "version": "0.0.1-13",
   "author": {
     "name": "Joe McCann",
     "email": "joe@subprint.com"

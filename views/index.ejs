@@ -14,14 +14,39 @@
 <body>
   <section id="main">
     <h1>THE CURRENT TOTAL NUMBER OF NPM MODULES IS:  <span class="npm-module-count"></span></h1>  
+    <div>
+      <button class="button" id="refresh">How about now?</button>
+    </div>
   </section>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
   </script>
+  
   <script>
-  $(function(){
-    $.getJSON('http://dev:3333/get_npm_count?callback=?', function(json){
+  
+  function getNpmCount(){
+    
+    $('#refresh').attr('disabled', true).addClass('lowpacity')
+    
+    $('.npm-module-count').text('')
+    
+    $.getJSON('/get_npm_count?callback=?', function(json){
+
       $('.npm-module-count').text(json.totalModules)
+
+      $('#refresh').attr('disabled', false).removeClass('lowpacity')
+      
     })
+    
+    return false
+    
+  }
+  
+  $(function(){
+    
+    getNpmCount()
+    
+    $('#refresh').bind('click', getNpmCount)
+    
   })
   </script>
   <!--
