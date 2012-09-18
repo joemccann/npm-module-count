@@ -23,9 +23,14 @@ function getNpmCount(res){
   request.get('http://npmjs.org', function(e,r,b){
     
     console.log('Received npmjs.org response...')
-    if(e) return res.status(500).send('Something fuct up')
-    if(r.statusCode > 399) return res.status(r.statusCode).message("Something not right")
-
+    if(e) {
+      console.error(e)
+      return res.status(500).send('Something fuct up')
+    }
+    if(r.statusCode > 399) {
+      console.log(r.statusCode + " is the status code greater than 399")
+      return res.status(r.statusCode).message("Something not right")
+    }
     jsdom.env({
       html: b,
       scripts: [
