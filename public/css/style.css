@@ -1,0 +1,33 @@
+html,
+body {
+  position: relative;
+  padding: 0;
+  margin: 0 auto;
+  overflow: auto;
+  font-family: 'Lato', Times, 'Times New Roman', serif;
+  font-size: 150%;
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+  text-align: center;
+}
+html {
+  background: #003e4d;
+  background: -moz-radial-gradient(center, ellipse cover, #00a7cf 0%, #003e4d 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #00a7cf), color-stop(100%, #003e4d));
+  background: -webkit-radial-gradient(center, ellipse cover, #00a7cf 0%, #003e4d 100%);
+  background: -o-radial-gradient(center, ellipse cover, #00a7cf 0%, #003e4d 100%);
+  background: -ms-radial-gradient(center, ellipse cover, #00a7cf 0%, #003e4d 100%);
+  background: radial-gradient(center, ellipse cover, #00a7cf 0%, #003e4d 100%);
+}
+.npm-module-count {
+  display: block;
+  font-size: 400%;
+}
+#main {
+  max-width: 500px;
+  margin: 0 auto;
+}

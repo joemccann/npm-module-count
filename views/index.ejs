@@ -7,30 +7,19 @@
 
     <meta name="description" content="<%= title %>">
     <meta name="author" content="Joe McCann">
-
-    <style type="text/css">
-      body{
-        padding: 2%;
-        font-family: Helvetica;
-        margin: 0 auto;
-        max-width: 480px;
-        text-align: center;
-      }
-      .npm-module-count{
-        display: block;
-        font-size: 300%;
-        color: #eee000;
-      }
-    </style>
+    
+    <link href='css/lato.css' rel='stylesheet' type='text/css'>
+    <link href='css/style.css' rel='stylesheet' type='text/css'>
   </head>
 <body>
-  <h1><%= title %></h1>
-  <p>The total number of NPM Modules is:  <span class="npm-module-count"></span></p>  
+  <section id="main">
+    <h1>THE CURRENT TOTAL NUMBER OF NPM MODULES IS:  <span class="npm-module-count"></span></h1>  
+  </section>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
   </script>
   <script>
   $(function(){
-    $.getJSON('http://npm-count.jit.su/get_npm_count', function(json){
+    $.getJSON('http://npm-count.jit.su/get_npm_count?callback=?', function(json){
       $('.npm-module-count').text(json.totalModules)
     })
   })

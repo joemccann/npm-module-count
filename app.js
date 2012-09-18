@@ -10,6 +10,7 @@ app.configure(function(){
   app.set('jsonp callback', true )
   app.use(express.favicon())
   app.use(express.logger('dev'))
+  app.use(require('stylus').middleware({ src: __dirname + '/public' }))
   app.use(express.static(__dirname + '/public'))
   app.use(express.bodyParser())
   app.use(express.methodOverride())
