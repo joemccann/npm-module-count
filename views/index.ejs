@@ -19,7 +19,7 @@
   </script>
   <script>
   $(function(){
-    $.getJSON('http://npm-count.jit.su/get_npm_count?callback=?', function(json){
+    $.getJSON('http://dev:3333/get_npm_count?callback=?', function(json){
       $('.npm-module-count').text(json.totalModules)
     })
   })
