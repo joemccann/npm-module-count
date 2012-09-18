@@ -1,0 +1,38 @@
+<!DOCTYPE html>  
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title><%= title %></title>
+
+    <meta name="description" content="<%= title %>">
+    <meta name="author" content="Joe McCann">
+
+    <style type="text/css">
+      body{
+        padding: 2%;
+        font-family: Helvetica;
+        margin: 0 auto;
+        max-width: 480px;
+        text-align: center;
+      }
+      .npm-module-count{
+        display:block;
+        font-size: 300%;
+        color: #eee000;
+      }
+    </style>
+  </head>
+<body>
+  <h1><%= title %></h1>
+  <p>The total number of NPM Modules is:  <span class="npm-module-count"></span></p>  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
+  </script>
+  <script>
+  $(function(){
+    $.getJSON('http://npm-count.jit.su/get_npm_count', function(json){
+      $('.npm-module-count').text(json.totalModules)
+    })
+  })
+  </script>
+</body>
