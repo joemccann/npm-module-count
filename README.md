@@ -6,7 +6,7 @@ Just a simple node app the has a JSONP friendly API to return the total number o
 Using jQuery...
 
 
-    $.getJSON('http://npm-count.jit.su/get_npm_count, function(json){
+    $.getJSON('http://npm-count.jit.su/get_npm_count?callback=?', function(json){
         console.log(json.totalModules) // logs to the console an integer
     })
 
