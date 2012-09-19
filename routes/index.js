@@ -1,7 +1,10 @@
 var request = require('request')
   , jsdom = require('jsdom')
   , utils = require('./utils')
-  , currentTotal = 14888 // eventually change it so when we boot the app, it fetches and stashes it
+  , currentTotal
+  , clients_awaiting_updates = [] // Update messages to send to each HTTP client
+  , BROWSER_KEEPALIVE_INTERVAL = 40 // How often to send a 'comment' update to keep browsers connected. In seconds.
+  , POLL_NPMJS_INTERVAL = 60 // How often to bother the poor NPMJS server
 
 exports.index = function(req, res){
   res.render('index', { title: 'NPM Modules Count', currentTotal: currentTotal })
@@ -12,14 +15,10 @@ exports.addBrowserToQueue = function(req, res){
   addBrowserToQueue(res)
 }
 
-// Update messages to send to each HTTP client 
-var clients_awaiting_updates = [];
-
-// How often to send a 'comment' update to keep browsers connected. In secs.
-var BROWSER_KEEPALIVE_INTERVAL = 40;
-
-// How often to bother the poor NPMJS server
-var POLL_NPMJS_INTERVAL = 60;
+exports.get_npm_count = function(req, res){
+  console.log('Get npm count...')
+  updateNPMCount(true,res)
+}
 
 // Requests for server side event updates. 
 // We send headers, and write data, but we never end the response. This is how SSE streams work.
@@ -32,7 +31,9 @@ function addBrowserToQueue(response) {
   clients_awaiting_updates.push(response);
 };
 
-setInterval(function updateNPMCount(){
+// Method that fetches the html from npmjs, scrapes it
+// and either sends back json or sse
+function updateNPMCount(isJsonP,res){
   console.log('Sending request to npmjs.org...')
 
   request.get('https://npmjs.org', function(e,r,b){
@@ -60,11 +61,18 @@ setInterval(function updateNPMCount(){
       var count = parseInt( $('#index > p:first').text().replace('Total Packages: ', '') )
       
       console.log("Total number of modules:  " + count)
-
       console.log("Sending update to awaiting clients...")
-      clients_awaiting_updates.forEach( function(response) {    
-        utils.respondWithStream(response, {totalModules: count})
-      });
+      
+      // In the case the the request is just a JSONP request...
+      if(isJsonP){
+        res.json({totalModules: count})
+      }
+      else{
+        // Otherwise HTML5 SERVERSIDE EVENT STREAM!
+        clients_awaiting_updates.forEach( function(response) {    
+          utils.respondWithStream(response, {totalModules: count})
+        })
+      }
       
       currentTotal = count
       
@@ -77,6 +85,13 @@ setInterval(function updateNPMCount(){
     })  // end env callback for jsdom
     
   })
+}
+
+// Now update on a fixed interval
+setInterval(function(){
+  
+  updateNPMCount()
+  
 }, POLL_NPMJS_INTERVAL * 1000)
 
 // Send 'keep alive' messages every so often so browsers stay connected 
