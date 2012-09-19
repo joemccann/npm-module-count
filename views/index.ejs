@@ -40,7 +40,7 @@
         if (event.eventPhase == EventSource.CLOSED) {
           update_failures += 1;
           if ( update_failures >= MAX_UPDATE_FAILURES ) {
-            $disconnected_modal.modal('show');
+            console.log('Updating failed too often. Your internet is probably broken.')
             source.close();        
           } 
         }
