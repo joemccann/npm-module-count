@@ -10,7 +10,11 @@
     {
       "name": "Joe McCann",
       "email": "joe@subprint.com"
-    }
+    },
+    {
+      "name": "Mike MacCana",
+      "email": "mike.maccana@gmail.com"
+    }      
   ],
   "scripts": {
     "start": "node app.js"
