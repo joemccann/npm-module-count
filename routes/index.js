@@ -87,12 +87,11 @@ function updateNPMCount(isJsonP,res){
   })
 }
 
+// Fire initially on booting up of app...
+updateNPMCount()
+
 // Now update on a fixed interval
-setInterval(function(){
-  
-  updateNPMCount()
-  
-}, POLL_NPMJS_INTERVAL * 1000)
+setInterval(updateNPMCount, POLL_NPMJS_INTERVAL * 1000)
 
 // Send 'keep alive' messages every so often so browsers stay connected 
 setInterval(function(){
