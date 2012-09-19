@@ -12,7 +12,7 @@
   </head>
 <body>
   <section id="main">
-    <h1>THE CURRENT TOTAL NUMBER OF NPM MODULES IS:  <span class="npm-module-count"></span></h1>  
+    <h1>THE CURRENT TOTAL NUMBER OF NPM MODULES IS:  <span class="npm-module-count"><%= currentTotal %></span></h1>  
     <div>
       <button class="button" id="refresh">How about now?</button>
     </div>
@@ -23,8 +23,6 @@
   function getNpmCount(){
     
     $('#refresh').attr('disabled', true).addClass('lowpacity')
-    
-    $('.npm-module-count').text('')
     
     $.getJSON('/get_npm_count?callback=?', function(json){
 
