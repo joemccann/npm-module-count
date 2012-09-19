@@ -1,21 +1,40 @@
 var request = require('request')
   , jsdom = require('jsdom')
+  , utils = require('./utils')
   , currentTotal = 14888 // eventually change it so when we boot the app, it fetches and stashes it
 
 exports.index = function(req, res){
   res.render('index', { title: 'NPM Modules Count', currentTotal: currentTotal })
 }
 
-exports.get_npm_count = function(req, res){
-  console.log('Get npm count...')
-  getNpmCount(res)
+exports.addBrowserToQueue = function(req, res){
+  console.log('Adding browser to queue awaiting npm count updates...')
+  addBrowserToQueue(res)
 }
 
+// Update messages to send to each HTTP client 
+var clients_awaiting_updates = [];
 
-function getNpmCount(res){
+// How often to send a 'comment' update to keep browsers connected. In secs.
+var BROWSER_KEEPALIVE_INTERVAL = 40;
 
+// How often to bother the poor NPMJS server
+var POLL_NPMJS_INTERVAL = 60;
+
+// Requests for server side event updates. 
+// We send headers, and write data, but we never end the response. This is how SSE streams work.
+function addBrowserToQueue(response) {
+  response.writeHead(200, { 
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive"
+  });
+  clients_awaiting_updates.push(response);
+};
+
+setInterval(function updateNPMCount(){
   console.log('Sending request to npmjs.org...')
-    
+
   request.get('https://npmjs.org', function(e,r,b){
     
     console.log('Received npmjs.org response...')
@@ -41,8 +60,11 @@ function getNpmCount(res){
       var count = parseInt( $('#index > p:first').text().replace('Total Packages: ', '') )
       
       console.log("Total number of modules:  " + count)
-      
-      res.json({totalModules: count})
+
+      console.log("Sending update to awaiting clients...")
+      clients_awaiting_updates.forEach( function(response) {    
+        utils.respondWithStream(response, {totalModules: count})
+      });
       
       currentTotal = count
       
@@ -55,4 +77,14 @@ function getNpmCount(res){
     })  // end env callback for jsdom
     
   })
-}
+}, POLL_NPMJS_INTERVAL * 1000)
+
+// Send 'keep alive' messages every so often so browsers stay connected 
+setInterval(function(){
+  clients_awaiting_updates.forEach( function(response) {    
+    utils.respondWithStream(response, null, 'keepalive')
+  });
+}, BROWSER_KEEPALIVE_INTERVAL * 1000)
+
+
+

@@ -22,7 +22,7 @@ app.configure('development', function(){
 })
 
 app.get('/', routes.index)
-app.get('/get_npm_count', routes.get_npm_count)
+app.get('/updates', routes.addBrowserToQueue)
 
 http.createServer(app).listen(3333)
 

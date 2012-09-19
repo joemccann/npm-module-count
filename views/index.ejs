@@ -13,32 +13,46 @@
 <body>
   <section id="main">
     <h1>THE CURRENT TOTAL NUMBER OF NPM MODULES IS:  <span class="npm-module-count"><%= currentTotal %></span></h1>  
-    <div>
-      <button class="button" id="refresh">How about now?</button>
-    </div>
   </section>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js">
   </script>
   <script>
-  function getNpmCount(){
+  
+  var MAX_UPDATE_FAILURES = 2;
+  var update_failures = 0;
+  
+  // Listen for server sent events
+  function setupUpdateListener(){
+    // Recieve messages and do stuff with them
+    if ( window.EventSource) {
+      console.log('Listening for server sent events.');
+      var source = new EventSource('/updates');  
+      source.addEventListener('message', function(event) {
+        update_failures = 0
+        var data = JSON.parse(event.data);
+        if ( data ) {
+          console.log('Got an update, woo:', data)
+          $('.npm-module-count').text(data.totalModules)
+        }
+      }, false);
+      // Don't bother harassing server continually if we lost the connection
+      source.addEventListener('error', function(event) {
+        if (event.eventPhase == EventSource.CLOSED) {
+          update_failures += 1;
+          if ( update_failures >= MAX_UPDATE_FAILURES ) {
+            $disconnected_modal.modal('show');
+            source.close();        
+          } 
+        }
+      }, false);
     
-    $('#refresh').attr('disabled', true).addClass('lowpacity')
-    
-    $.getJSON('/get_npm_count?callback=?', function(json){
-
-      $('.npm-module-count').text(json.totalModules)
-
-      $('#refresh').attr('disabled', false).removeClass('lowpacity')
-      
-    })
-    
-    return false
-    
+    } else {
+      alert('You need a browser that supports HTML5 server sent events to use this app. Get Chrome or Firefox.')
+    }
   }
 
   $(function(){
-    getNpmCount()
-    $('#refresh').bind('click', getNpmCount)
+    setupUpdateListener();
   })
   </script>
   <!--
