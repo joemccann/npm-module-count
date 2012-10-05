@@ -58,7 +58,7 @@ function updateNPMCount(isJsonP,res){
       
       var $ = window.jQuery
 
-      var count = parseInt( $('#index > p:first').text().replace('Total Packages: ', '') )
+      var count = $('#index > p:first').text().replace('Total Packages: ', '')
       
       console.log("Total number of modules:  " + count)
       console.log("Sending update to awaiting clients...")
