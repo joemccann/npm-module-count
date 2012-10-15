@@ -41,11 +41,11 @@ function updateNPMCount(isJsonP,res){
     console.log('Received npmjs.org response...')
     if(e) {
       console.error(e)
-      return res.status(500).send('Something fuct up')
+      if(res) return res.status(500).send('Something fuct up')
     }
     if(r.statusCode > 399) {
       console.log(r.statusCode + " is the status code greater than 399")
-      return res.status(r.statusCode).message("Something not right")
+      if(res) return res.status(r.statusCode).message("Something not right")
     }
     jsdom.env({
       html: b,
